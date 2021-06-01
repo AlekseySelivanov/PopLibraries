@@ -1,35 +1,44 @@
 package com.example.poplibraries.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.poplibraries.R
 import com.example.poplibraries.databinding.ActivityMainBinding
 import com.example.poplibraries.mvp.presenter.MainPresenter
 import com.example.poplibraries.mvp.view.MainView
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
+import ru.terrakok.cicerone.android.support.SupportAppNavigator
 
-
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : MvpAppCompatActivity(), MainView {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
-    val presenter = MainPresenter(this)
+
+    val navigatorHolder = App.instance.navigatorHolder
+    val navigator = SupportAppNavigator(this, supportFragmentManager, R.id.container)
+    private val presenter by moxyPresenter { MainPresenter(App.instance.router) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.btnCounter1.setOnClickListener { presenter.counter1Click() }
-        binding.btnCounter2.setOnClickListener { presenter.counter2Click() }
-        binding.btnCounter3.setOnClickListener { presenter.counter3Click() }
     }
 
-    override fun setButton1Text(text: String) {
-        binding.btnCounter1.text = text
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
     }
 
-    override fun setButton2Text(text: String) {
-        binding.btnCounter2.text = text
+    override fun onPause() {
+        super.onPause()
+        navigatorHolder.removeNavigator()
     }
 
-    override fun setButton3Text(text: String) {
-        binding.btnCounter3.text = text
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is BackButtonListener && it.backPressed()) {
+                return
+            }
+        }
+        presenter.backClick()
     }
 }
