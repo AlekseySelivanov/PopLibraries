@@ -1,4 +1,4 @@
-package com.example.poplibraries.mvp.model.repo
+package com.example.poplibraries.mvp.model.entity
 
 import com.google.gson.annotations.SerializedName
 

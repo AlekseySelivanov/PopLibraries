@@ -1,6 +1,7 @@
-package com.example.poplibraries.mvp.model.repo
+package com.example.poplibraries.mvp.model.entity
 
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 

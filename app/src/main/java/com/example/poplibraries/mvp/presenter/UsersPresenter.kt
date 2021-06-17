@@ -1,6 +1,6 @@
 package com.example.poplibraries.mvp.presenter
 
-import com.example.poplibraries.mvp.model.repo.GithubUser
+import com.example.poplibraries.mvp.model.entity.GithubUser
 import com.example.poplibraries.mvp.model.repo.IGithubUsersRepo
 import com.example.poplibraries.mvp.view.UserItemView
 import com.example.poplibraries.mvp.view.UsersView
@@ -31,11 +31,13 @@ class UsersPresenter(
         private fun onBindViewSuccess(view: UserItemView, login: String, avatarUrl:String?) {
             view.setLogin(login)
             avatarUrl?.let {
-                view.loadImage(it)
+                view.loadImage(it, login)
             }
+
         }
 
         private fun onBindViewError(error: Throwable) {
+
         }
     }
 
