@@ -1,8 +1,8 @@
 package com.example.poplibraries.mvp.presenter
 
 
-import com.example.poplibraries.mvp.model.repo.GitHubRepo
-import com.example.poplibraries.mvp.model.repo.IGithubUsersRepo
+import com.example.poplibraries.mvp.model.entity.GitHubRepo
+import com.example.poplibraries.mvp.model.repo.IGithubUsersReposRepo
 import com.example.poplibraries.mvp.view.RepoView
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -14,7 +14,7 @@ class RepoPresenter(
     private val userLogin: String,
     private val repoUrl: String,
     val mainThreadScheduler: Scheduler,
-    val usersRepo: IGithubUsersRepo,
+    val ReposRepo: IGithubUsersReposRepo,
     val router: Router
 ) : MvpPresenter<RepoView>() {
 
@@ -22,7 +22,7 @@ class RepoPresenter(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        disposable += usersRepo
+        disposable += ReposRepo
             .getUserRepoByName(userLogin, repoUrl)
             .observeOn(mainThreadScheduler)
             .subscribe(

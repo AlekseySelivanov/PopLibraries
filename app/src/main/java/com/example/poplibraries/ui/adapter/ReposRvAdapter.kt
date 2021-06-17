@@ -1,4 +1,4 @@
-package com.example.poplibraries_hw.mvp.view
+package com.example.poplibraries.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

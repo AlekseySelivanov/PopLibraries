@@ -1,11 +1,11 @@
-package com.example.poplibraries_hw.mvp.view
+package com.example.poplibraries.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.poplibraries.databinding.ItemUserBinding
-import com.example.poplibraries.mvp.model.repo.IImageLoader
+import com.example.poplibraries.mvp.model.image.IImageLoader
 import com.example.poplibraries.mvp.presenter.IUserListPresenter
 import com.example.poplibraries.mvp.view.UserItemView
 
@@ -33,8 +33,8 @@ class UsersRVAdapter(val presenter: IUserListPresenter, val imageLoader: IImageL
             tvLogin.text = text
         }
 
-        override fun loadImage(url: String) {
-            imageLoader.loadInto(url, vb.ivImage)
+        override fun loadImage(url: String, login:String) {
+            imageLoader.loadInto(url,login, vb.ivImage)
         }
 
     }

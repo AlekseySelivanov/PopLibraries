@@ -1,23 +1,30 @@
 package com.example.poplibraries.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.poplibraries.databinding.FragmentUserBinding
 import com.example.poplibraries.mvp.model.api.ApiHolder
+import com.example.poplibraries.mvp.model.cache.RoomUsersCache
+import com.example.poplibraries.mvp.model.cache.RoomUsersReposCache
+import com.example.poplibraries.mvp.model.repo.RetrofitGithubReposRepo
 import com.example.poplibraries.mvp.model.repo.RetrofitGithubUsersRepo
 import com.example.poplibraries.mvp.presenter.UserPresenter
 import com.example.poplibraries.mvp.view.UserView
 import com.example.poplibraries.ui.App
-import com.example.poplibraries_hw.mvp.view.ReposRVAdapter
+import com.example.poplibraries.ui.adapter.ReposRVAdapter
+import com.example.poplibraries.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class UserFragment : MvpAppCompatFragment(), UserView {
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
@@ -27,7 +34,8 @@ class UserFragment : MvpAppCompatFragment(), UserView {
     private val presenter by moxyPresenter {
         UserPresenter(
             userLogin, AndroidSchedulers.mainThread(),
-            RetrofitGithubUsersRepo(ApiHolder.api),
+            RetrofitGithubUsersRepo(ApiHolder.api, AndroidNetworkStatus(requireContext()), RoomUsersCache()),
+            RetrofitGithubReposRepo(ApiHolder.api, AndroidNetworkStatus(requireContext()), RoomUsersReposCache()),
             App.instance.router
         )
     }
