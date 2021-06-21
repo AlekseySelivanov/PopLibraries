@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.poplibraries.databinding.FragmentUsersBinding
 import com.example.poplibraries.mvp.model.api.ApiHolder
 import com.example.poplibraries.mvp.model.cache.RoomUsersCache
-import com.example.poplibraries.mvp.model.image.RoomImageCache
 import com.example.poplibraries.mvp.model.repo.RetrofitGithubUsersRepo
 import com.example.poplibraries.mvp.presenter.UsersPresenter
 import com.example.poplibraries.mvp.view.UsersView
@@ -32,15 +31,9 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     private val binding get() = _binding!!
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(
-            AndroidSchedulers.mainThread(),
-            RetrofitGithubUsersRepo(
-                ApiHolder.api,
-                AndroidNetworkStatus(requireContext()),
-                RoomUsersCache()
-            ),
-            App.instance.router
-        )
+        UsersPresenter().apply {
+            App.component.inject(this)
+        }
     }
     var adapter: UsersRVAdapter? = null
 
@@ -61,11 +54,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
         binding.rvUsers.layoutManager = LinearLayoutManager(context)
         adapter = UsersRVAdapter(
             presenter.usersListPresenter,
-            GlideImageLoader(
-                AndroidSchedulers.mainThread(),
-                AndroidNetworkStatus(requireContext()),
-                RoomImageCache(requireContext())
-            )
+            GlideImageLoader()
         )
         binding.rvUsers.adapter = adapter
     }

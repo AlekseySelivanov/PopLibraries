@@ -1,16 +1,12 @@
 package com.example.poplibraries.mvp.model.cache
 
-
-
 import com.example.poplibraries.mvp.model.entity.GithubUser
 import com.example.poplibraries.mvp.model.entity.room.RoomGitHubUser
 import com.example.poplibraries.mvp.model.entity.room.db.Database
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
-class RoomUsersCache : IUsersCache {
-    private val db = Database.getInstance()
-
+class RoomUsersCache(val db: Database) : IUsersCache {
     override fun putUsers(users: List<GithubUser>): Completable {
 
         val roomUsers = users.map { user ->
@@ -21,7 +17,7 @@ class RoomUsersCache : IUsersCache {
                 user.reposUrl ?: ""
             )
         }
-       return db.userDao.insert(roomUsers)
+        return db.userDao.insert(roomUsers)
 
     }
 
