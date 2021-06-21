@@ -2,26 +2,24 @@ package com.example.poplibraries.ui
 
 
 import android.app.Application
-import com.example.poplibraries.mvp.model.entity.room.db.Database
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.Router
+import com.example.poplibraries.di.AppComponent
+import com.example.poplibraries.di.modules.AppModule
+import com.example.poplibraries.di.DaggerAppComponent
+
 
 class App : Application() {
     companion object {
         lateinit var instance: App
+        val component get() = instance.appComponent
     }
 
-    //Временно до даггера положим это тут
-    private val cicerone: Cicerone<Router> by lazy {
-        Cicerone.create()
-    }
-
-    val navigatorHolder get() = cicerone.getNavigatorHolder()
-    val router get() = cicerone.router
+    private lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Database.create(this)
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
 }
