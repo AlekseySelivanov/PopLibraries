@@ -13,40 +13,40 @@ import javax.inject.Inject
 
 class RepoPresenter(
     private val userLogin: String,
-    private val repoUrl: String
+    private val repoUrl: String,
+    private val mainThreadScheduler: Scheduler,
+    private val reposRepo: IGithubUsersReposRepo,
+    private val router: Router,
+    private val viewContract:RepoView
+
 ) : MvpPresenter<RepoView>() {
 
     private var disposable = CompositeDisposable()
 
 
-    @Inject
-    lateinit var mainThreadScheduler: Scheduler
-    @Inject
-    lateinit var ReposRepo: IGithubUsersReposRepo
-    @Inject
-    lateinit var router: Router
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        disposable += ReposRepo
+        disposable += reposRepo
             .getUserRepoByName(userLogin, repoUrl)
             .observeOn(mainThreadScheduler)
             .subscribe(
                 ::onLoadDataSuccess,
                 ::onLoadDataError
             )
+
     }
 
-    private fun onLoadDataError(error: Throwable) {
+    fun onLoadDataError(error: Throwable) {
         router.exit()
     }
 
-    private fun onLoadDataSuccess(repo: GitHubRepo) {
-        viewState.showRepoId(repo.id)
-        viewState.showRepoName(repo.name)
-        viewState.showRepoDescription(repo.description)
-        viewState.showRepoForksCount(repo.forksCount)
+    fun onLoadDataSuccess(repo: GitHubRepo) {
+        viewContract.showRepoId(repo.id)
+        viewContract.showRepoName(repo.name)
+        viewContract.showRepoDescription(repo.description)
+        viewContract.showRepoForksCount(repo.forksCount)
     }
 
     override fun onDestroy() {
